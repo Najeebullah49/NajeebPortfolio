@@ -31,10 +31,10 @@
       <div class="col">
         <div class="container">
           <h1 class="text-center mt-5 mb-4">Get In Touch</h1>
-          <div class="container mt-2 mb-5">Address: Shop 2 near to Sheshmahal resturent University road Karachi
+          <div class="container mt-2 mb-5">Address: Shop 2 near to address muhata abha shamsan
           </div>
           <div class="container mb-5">Email: nu085051@gmail.com</div>
-          <div class="container mb-5">Phone: 03000033681</div>
+          <div class="container mb-5">Phone: +966579320084</div>
           <div class="container mb-5">Open time: 8am to 10pm</div>
         </div>
       </div>

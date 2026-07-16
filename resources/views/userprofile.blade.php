@@ -111,7 +111,11 @@
       <form action="{{ route('update.profile.picture') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="d-flex justify-content-center">
-          <img src="{{ asset('uploads/profiles/'.$user->picture) }}" alt="User Picture" class="img-fluid rounded-circle bg-primary" id="profile-picture" style="width: 150px; height: 150px; border-radius: 50%;">
+
+
+          <img src="{{ !empty($tailoruser->picture) && file_exists(public_path('uploads/profiles/'.$tailoruser->picture)) 
+                        ? asset('uploads/profiles/'.$tailoruser->picture) 
+                        : asset('images/profile/defaultprofile.png') }}" alt="User Picture" class="img-fluid rounded-circle bg-primary" id="profile-picture" style="width: 150px; height: 150px; border-radius: 50%;">
           <div class="text-auto border bg-primary border-secondry rounded-circle" style="position:absolute; margin-top:125px; width:40px; height:40px; display:flex; align-items:center; justify-content:center;">
             <label for="file-input" class="camera-icon bg-primary rounded-circle" style="cursor: pointer; width:40px; height:40px; display:flex; align-items:center; justify-content:center;">
               <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-camera" viewBox="0 0 16 16">
@@ -129,7 +133,7 @@
     </div>
 
     <!-- Display Name -->
-    <h4 class="mb-4 mt-4" id="name-display"> {{ $user->name }}</h4>
+    <h4 class="mb-4 mt-4" id="name-display"> {{ $tailoruser->name }}</h4>
    
     <!-- Name Edit -->
     <form class="col-12" method="POST" action="{{ route('updateUserName') }}">
@@ -141,7 +145,7 @@
             <path fill-rule="evenodd" d="M14 14s-1-1.5-6-1.5S2 14 2 14s1-4 6-4 6 4 6 4z"/>
           </svg>
         </span>
-        <input type="text" class="form-control @error('name') is-invalid @enderror" placeholder="Name" id="name-input" name="name" value="{{ $user->name }}" disabled>
+        <input type="text" class="form-control @error('name') is-invalid @enderror" placeholder="Name" id="name-input" name="name" value="{{ $tailoruser->name }}" disabled>
         <button type="button" class="btn btn-primary" id="edit-name-btn" onclick="enableEditing()">Edit</button>
         <button type="submit" class="btn btn-success d-none" id="save-name-btn">Save</button>
         @error('name')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
@@ -158,7 +162,7 @@
             <path d="M0 6.383l5.803 3.837a.5.5 0 0 0 .394.08h3.606a.5.5 0 0 0 .394-.08L16 6.383V12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6.383z"/>
           </svg>
         </span>
-        <input type="email" class="form-control @error('email') is-invalid @enderror" placeholder="Email" id="email-input" name="email" value="{{ $user->email }}" disabled>
+        <input type="email" class="form-control @error('email') is-invalid @enderror" placeholder="Email" id="email-input" name="email" value="{{ $tailoruser->email }}" disabled>
         <button type="button" class="btn btn-primary" id="edit-email-btn" onclick="enableEmailEditing()">Edit</button>
         <button type="submit" class="btn btn-success d-none" id="save-email-btn">Save</button>
         @error('email')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror

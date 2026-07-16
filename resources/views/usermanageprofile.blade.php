@@ -36,7 +36,9 @@
                             
                             <div class="d-flex justify-content-center">
                                 <img class="profile-image bg-primary border border-secondry border-1" 
-                                     src="{{ asset('uploads/profiles/' . $user->picture) }}" 
+                                     src="{{ !empty($tailoruser->picture) && file_exists(public_path('uploads/profiles/'.$tailoruser->picture)) 
+                        ? asset('uploads/profiles/'.$tailoruser->picture) 
+                        : asset('images/profile/defaultprofile.png') }}" 
                                      alt="Profile Image" style="width: 150px; height: 150px; border-radius: 50%;">
                                      <div class="text-auto border bg-primary border-secondry rounded-circle" style="position:absolute; margin-top:125px; width:40px; height:40px; display:flex; aligns-item:center; justify-content:center;">
                             <label for="file-input" class="camera-icon bg-primary rounded-circle" style="cursor: pointer; width:40px; height:40px; display:flex; aligns-item:center; justify-content:center;">
@@ -50,7 +52,7 @@
 
                             <input type="file" name="profile_picture" id="file-input" accept="image/*" class="d-none" onchange="showSaveButton()">
 
-                            <h5 class="text-center mb-2 mt-4">{{$user->name}}</h5>
+                            <h5 class="text-center mb-2 mt-4">{{$tailoruser->name}}</h5>
 
                             @error('profile_picture')
                                 <div class="text-danger mt-2">{{ $message }}</div>
@@ -59,7 +61,7 @@
 
                         <div class="mb-3">
                             <label for="name" class="form-label">Name</label>
-                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name', $user->name) }}" required>
+                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name', $tailoruser->name) }}" required>
                             @error('name')
                                 <div class="text-danger mt-2">{{ $message }}</div>
                             @enderror
@@ -67,7 +69,7 @@
 
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email', $user->email) }}" required>
+                            <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email', $tailoruser->email) }}" required>
                             @error('email')
                                 <div class="text-danger mt-2">{{ $message }}</div>
                             @enderror

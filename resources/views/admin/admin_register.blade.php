@@ -107,7 +107,7 @@
     <button class="btn btn-primary w-100 mt-3 mb-3" type="submit">Sign Up</button>
 </form>
 						
-						<div class="auth-option text-center pt-5">Already have an account? <a class="text-link" href="{{route('login')}}" >Log in</a></div>
+						<div class="auth-option text-center pt-5">Already have an account? <a class="text-link" href="{{route('userlogin')}}" >Log in</a></div>
 					</div><!--//auth-form-container-->	
 					
 					

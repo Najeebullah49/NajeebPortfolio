@@ -81,7 +81,7 @@ class UserController extends Controller
     
         // Save the user and redirect with success message
         if ($newuser->save()) {
-            return redirect()->route('login')->with('success', 'Congratulations! Your account is ready.');
+            return redirect()->route('userlogin')->with('success', 'Congratulations! Your account is ready.');
         }
     
         // Return to sign-up page with a generic error message if saving fails
@@ -89,38 +89,49 @@ class UserController extends Controller
     }
     
 
-    public function loginUser(Request $data)
-    {
-        $user = User::where('email', $data->input('email'))->first();
+  public function tailorloginUser(Request $request)
+{
+    $user = User::where('email', $request->input('email'))->first();
 
-        if ($user && Hash::check($data->input('password'), $user->password)) {
-            session()->put('id', $user->id);
-            session()->put('name', $user->name);
-            session()->put('email', $user->email);
-            session()->put('role', $user->type ?? 'Customer');
-
-            if ($user->type == 'Customer') {
-                return redirect()->route('home'); // Use named route
-            }
-
-            else{
-                session()->put('admin_id', $user->id);
-            return redirect()->route('displayDashboard');
-            }
-        }
-
-        return redirect()->route('login')->with('error', 'Email or password is incorrect.');
+    // Check if email exists
+    if (!$user) {
+        return redirect()->back()->with(
+            'error',
+            'The email "' . $request->input('email') . '" is not registered.'
+        );
     }
 
-    public function logout(Request $request)
+    // Check password
+    if (!Hash::check($request->input('password'), $user->password)) {
+        return redirect()->back()->with(
+            'error',
+            'Incorrect password.'
+        );
+    }
+
+    // Login successful
+    session()->put('id', $user->id);
+    session()->put('name', $user->name);
+    session()->put('email', $user->email);
+    session()->put('role', $user->type ?? 'Admin');
+
+    if ($user->type == 'Customer') {
+        return redirect()->route('home');
+    } else {
+        session()->put('admin_id', $user->id);
+        return redirect()->route('displayDashboard');
+    }
+}
+
+
+    //User Logout
+    public function userlogout(Request $request)
     {
           // Forget only user-specific session values
     $request->session()->forget(['id', 'name', 'email', 'role']);
-
-  
-
         // Redirect to the login page
-        return redirect()->route('login');
+        return redirect()->route('userlogin');
+        
     }
     
 
@@ -150,19 +161,19 @@ public function displayReadyMade()
 }
 
 
-    //Show profile
-    public function profile()
+    // Tailor user layout profile Show profile
+    public function tailoruserprofile()
     {
         // Retrieve the 'id' from the session
     $userId = session()->get('id');
 
     // Fetch the user details where the 'id' matches the session stored 'id'
-    $user = User::find($userId);
+    $tailoruser = User::find($userId);
 
     // Check if the user is found
-    if ($user) {
+    if ($tailoruser) {
         // Pass the user data to the view
-        return view('layouts.masterLayout', compact('user'));
+        return view('layouts/masterLayout', compact('tailoruser'));
     } else {
         // Handle case where the user doesn't exist
         return redirect()->route('login')->with('error', 'User not found');
@@ -170,24 +181,27 @@ public function displayReadyMade()
     }
 
 
-
+// Tailor User Profile
     public function myprofile()
     {
         // Retrieve the 'id' from the session
-    $userpId = session()->get('id');
+    $userId = session()->get('id');
 
     // Fetch the user details where the 'id' matches the session stored 'id'
-    $userp = User::find($userpId);
+    $tailoruser = User::find($userId);
 
     // Check if the user is found
-    if ($userp) {
+    if ($tailoruser) {
         // Pass the user data to the view
-        return view('userprofile', compact('userp'));
+        return view('userprofile', compact('tailoruser'));
     } else {
         // Handle case where the user doesn't exist
-        return redirect()->route('login')->with('error', 'User not found');
+        return redirect()->route('userlogin')->with('error', 'User not found');
     }
     }
+
+
+
    // Change User profile
    public function updateProfilePicture(Request $request)
    {
@@ -220,7 +234,7 @@ public function displayReadyMade()
        // Save only the file name (not the folder path) in the database
        $user->picture = $fileName; // Store only the filename
        $user->save();
-   
+  
        return redirect()->back()->with('success', 'Profile picture updated successfully!');
    }
 
@@ -383,18 +397,18 @@ public function updateProfile(Request $request)
     ]);
 
     // Retrieve the user using the session ID
-    $user = User::find(session('id'));
+    $tailoruser = User::find(session('id'));
 
     // Check if user exists
-    if (!$user) {
+    if (!$tailoruser) {
         return redirect()->route('usermanageprofile.show')->with('error', 'User not found.');
     }
 
     // Update profile picture if provided
     if ($request->hasFile('profile_picture')) {
         // Delete the old profile picture if it exists
-        if ($user->picture && file_exists(public_path('uploads/profiles/' . $user->picture))) {
-            unlink(public_path('uploads/profiles/' . $user->picture)); // Delete the old file
+        if ($tailoruser->picture && file_exists(public_path('uploads/profiles/' . $tailoruser->picture))) {
+            unlink(public_path('uploads/profiles/' . $tailoruser->picture)); // Delete the old file
         }
     
         // Handle the new file
@@ -403,24 +417,24 @@ public function updateProfile(Request $request)
         $file->move(public_path('uploads/profiles/'), $fileName); // Move the file to the 'uploads/profiles/' folder
     
         // Save only the file name in the database
-        $user->picture = $fileName;
+        $tailoruser->picture = $fileName;
     }
     
 
     // Update name and email
-    $user->name = $request->input('name');
-    $user->email = $request->input('email');
+    $tailoruser->name = $request->input('name');
+    $tailoruser->email = $request->input('email');
 
     // Update password if provided
     if ($request->filled('password')) {
-        $user->password = Hash::make($request->input('password'));
+        $tailoruser->password = Hash::make($request->input('password'));
     }
 
     // Save the updated profile data
-    $user->save();
+    $tailoruser->save();
 
     // Update session with new data
-    session(['name' => $user->name, 'email' => $user->email]);
+    session(['name' => $tailoruser->name, 'email' => $tailoruser->email]);
 
     return redirect()->route('usermanageprofile.show')->with('success', 'Profile updated successfully.');
 }
@@ -487,7 +501,7 @@ public function updateProfile(Request $request)
     
         // Save the user and redirect with success message
         if ($newuser->save()) {
-            return redirect()->route('login')->with('success', 'Congratulations! Your account is ready.');
+            return redirect()->route('userlogin')->with('success', 'Congratulations! Your account is ready.');
         }
     
         // Return to sign-up page with a generic error message if saving fails
@@ -495,15 +509,7 @@ public function updateProfile(Request $request)
     }
     
     
-     public function adminLogout(Request $request)
-    {
-        $request->session()->forget('admin_id');
-    
-    
-        // Redirect to the login page
-        return redirect()->route('login');
-    }
-    
+
 
 
 

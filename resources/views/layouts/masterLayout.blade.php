@@ -114,7 +114,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary px-3">
   <!-- Left: Brand -->
-  <a class="navbar-brand" href="#">NAJEEB TAILOR</a>
+  <a class="navbar-brand" href="home">NAJEEB TAILOR</a>
 
   <!-- Center Icons (Mobile only) -->
   <div class="d-lg-none d-flex align-items-center center-icons">
@@ -140,12 +140,12 @@
     </div>
 
     <!-- Profile (mobile) -->
-    @if(isset($user))
+    @if(isset($tailoruser))
       <div class="nav-item dropdown">
         <a class="nav-link" href="#" data-bs-toggle="dropdown" aria-expanded="false">
           <img
-            src="{{ !empty($user->picture) && file_exists(public_path('uploads/profiles/'.$user->picture)) 
-                      ? asset('uploads/profiles/'.$user->picture) 
+            src="{{ !empty($tailoruser->picture) && file_exists(public_path('uploads/profiles/'.$tailoruser->picture)) 
+                      ? asset('uploads/profiles/'.$tailoruser->picture) 
                       : asset('images/profile/defaultprofile.png') }}"
             class="rounded-circle border border-secondary"
             style="width: 35px; height: 35px; object-fit: cover;"
@@ -154,14 +154,14 @@
         <div class="dropdown-menu dropdown-menu-end profile-dropdown" data-bs-auto-close="outside">
           <div class="profile-header">
             <img
-              src="{{ !empty($user->picture) && file_exists(public_path('uploads/profiles/'.$user->picture)) 
+              src="{{ !empty($user->picture) && file_exists(public_path('uploads/profiles/'.$tailoruser->picture)) 
                         ? asset('uploads/profiles/'.$user->picture) 
                         : asset('images/profile/defaultprofile.png') }}"
               class="rounded-circle border border-secondary"
               style="width: 70px; height: 70px; object-fit: cover;"
               alt="Profile" loading="lazy">
-            <h6 class="mt-2 mb-0">{{ $user->name }}</h6>
-            <small>{{ $user->email }}</small>
+            <h6 class="mt-2 mb-0">{{ $tailoruser->name }}</h6>
+            <small>{{ $tailoruser->email }}</small>
           </div>
           <hr>
           <a class="dropdown-item" href="/userprofile">My Profile</a>
@@ -180,7 +180,7 @@
             </li>
 
           <hr>
-          <a class="dropdown-item text-danger" href="{{ URL::to('logout') }}">Logout</a>
+          <a class="dropdown-item text-danger" href="{{ URL::to('userlogout') }}">Logout</a>
         </div>
       </div>
     @else
@@ -196,7 +196,7 @@
             <h6 class="mt-2 mb-0">Please Login or Register</h6>
           </div>
           <hr>
-          <a class="dropdown-item" href="{{route('login')}}">Login</a>
+          <a class="dropdown-item" href="{{route('userlogin')}}">Login</a>
           <a class="dropdown-item" href="{{route('signUp')}}">Register</a>
         </div>
       </div>
@@ -213,7 +213,7 @@
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav mx-lg-auto">
       <li class="nav-item"><a class="nav-link" href="/home">Home</a></li>
-      <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
+      <li class="nav-item"><a class="nav-link" href="/tailorabout">About</a></li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Shop</a>
         <ul class="dropdown-menu">
@@ -250,12 +250,12 @@
       </div>
 
       <!-- Profile (desktop) -->
-      @if(isset($user))
+      @if(isset($tailoruser))
         <div class="nav-item dropdown">
           <a class="nav-link" href="#" data-bs-toggle="dropdown" aria-expanded="false">
             <img
-              src="{{ !empty($user->picture) && file_exists(public_path('uploads/profiles/'.$user->picture)) 
-                        ? asset('uploads/profiles/'.$user->picture) 
+              src="{{ !empty($tailoruser->picture) && file_exists(public_path('uploads/profiles/'.$tailoruser->picture)) 
+                        ? asset('uploads/profiles/'.$tailoruser->picture) 
                         : asset('images/profile/defaultprofile.png') }}"
               class="rounded-circle border border-secondary"
               style="width: 35px; height: 35px; object-fit: cover;"
@@ -264,14 +264,14 @@
           <div class="dropdown-menu dropdown-menu-end profile-dropdown" data-bs-auto-close="outside">
             <div class="profile-header">
               <img
-                src="{{ !empty($user->picture) && file_exists(public_path('uploads/profiles/'.$user->picture)) 
-                          ? asset('uploads/profiles/'.$user->picture) 
+                src="{{ !empty($tailoruser->picture) && file_exists(public_path('uploads/profiles/'.$tailoruser->picture)) 
+                          ? asset('uploads/profiles/'.$tailoruser->picture) 
                           : asset('images/profile/defaultprofile.png') }}"
                 class="rounded-circle border border-secondary"
                 style="width: 70px; height: 70px; object-fit: cover;"
                 alt="Profile" loading="lazy">
-              <h6 class="mt-2 mb-0">{{ $user->name }}</h6>
-              <small>{{ $user->email }}</small>
+              <h6 class="mt-2 mb-0">{{ $tailoruser->name }}</h6>
+              <small>{{ $tailoruser->email }}</small>
             </div>
             <hr>
             <a class="dropdown-item" href="/userprofile">My Profile</a>
@@ -306,7 +306,7 @@
               <h6 class="mt-2 mb-0">Please Login or Register</h6>
             </div>
             <hr>
-            <a class="dropdown-item" href="{{route('login')}}">Login</a>
+            <a class="dropdown-item" href="{{route('userlogin')}}">Login</a>
             <a class="dropdown-item" href="{{route('signUp')}}">Register</a>
           </div>
         </div>

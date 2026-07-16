@@ -108,7 +108,7 @@
             localStorage.setItem('optionalProducts', JSON.stringify(optionalProducts));
             window.location.href = 'productDetails';
         @else
-            window.location.href = "{{ route('login') }}";
+            window.location.href = "{{ route('userlogin') }}";
         @endif
     }
 </script>

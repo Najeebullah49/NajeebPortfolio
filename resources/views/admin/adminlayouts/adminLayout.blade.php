@@ -38,11 +38,11 @@
         <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle text-dark" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    @if(isset($admindata))
+                    @if(isset($tailoradmindata))
 
  <img
-  src="{{ !empty($admindata->picture) && file_exists(public_path('uploads/profiles/'.$admindata->picture))
-         ? asset('uploads/profiles/'.$admindata->picture)
+  src="{{ !empty($tailoradmindata->picture) && file_exists(public_path('uploads/profiles/'.$tailoradmindata->picture))
+         ? asset('uploads/profiles/'.$tailoradmindata->picture)
          : asset('images/profile/defaultprofile.png') }}"
   class="rounded-circle img-fluid border border-primary bg-primary"
   style="width: 30px; height: 30px; object-fit: cover;"
@@ -56,11 +56,11 @@
                     @endif
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                    @if(isset($admindata))
+                    @if(isset($tailoradmindata))
                         <li>
                          <img
-  src="{{ !empty($admindata->picture) && file_exists(public_path('uploads/profiles/'.$admindata->picture))
-         ? asset('uploads/profiles/'.$admindata->picture)
+  src="{{ !empty($tailoradmindata->picture) && file_exists(public_path('uploads/profiles/'.$tailoradmindata->picture))
+         ? asset('uploads/profiles/'.$tailoradmindata->picture)
          : asset('images/profile/defaultprofile.png') }}"
   class="rounded-circle ms-3 img-fluid border border-primary bg-primary"
   style="width: 30px; height: 30px; object-fit: cover;"
@@ -68,16 +68,16 @@
   loading="lazy"
   onerror="this.onerror=null; this.src='{{ asset('images/profile/defaultprofile.png') }}';"
 />
-                            <small class="me-3">{{ $admindata->name }}</small>
-                            <small class="text-center mx-3 my-1">{{ $admindata->email }}</small>
+                            <small class="me-3">{{ $tailoradmindata->name }}</small>
+                            <small class="text-center mx-3 my-1">{{ $tailoradmindata->email }}</small>
                         </li>
                         <li><hr class="dropdown-divider" /></li>
                     @endif
                     <li><a class="dropdown-item" href="/adminprofile">Profile</a></li>
-                    <li><a class="dropdown-item" href="/admin_register">Register</a></li>
+                    <li><a class="dropdown-item" href="/tailoradminregister">Register</a></li>
                      <li><a class="dropdown-item" href="/adminusercontact">Contact History</a></li>
                     <!-- <li><a class="dropdown-item" href="{{--route('s_a_manageprofile')--}}">Settings</a></li> -->
-                    <li><a class="dropdown-item" href="/adminlogout">Logout</a></li>
+                    <li><a class="dropdown-item" href="/tailoradminlogout">Logout</a></li>
                 </ul>
             </li>
         </ul>
@@ -93,7 +93,7 @@
                         <a class="nav-link text-white active" href="/displayDashboard">
                             <i class="fas fa-tachometer-alt me-2"></i> Dashboard
                         </a>
-                        <a class="nav-link text-white active" href="{{route('profits')}}">
+                        <a class="nav-link text-white active" href="{{route('tailor.profits')}}">
                              <i class="fas fa-coins me-2"></i> Profits
                         </a>
 
@@ -136,8 +136,8 @@
                         <a class="nav-link text-white active" href="{{route('charts')}}">
                              <i class="fas fa-chart-bar me-2"></i> Chart
                         </a>
-                        <a class="nav-link text-white active" href="/admin_register">
-                          <i class="fas fa-file-alt me-2"></i> Page
+                        <a class="nav-link text-white active" href="/tailoradminregister">
+                          <i class="fas fa-file-alt me-2"></i> Register Admin
                         </a>
 
                          <a class="nav-link text-white active" href="/adminusercontact">
@@ -145,7 +145,7 @@
                         </a>
 
 
-                        <a class="nav-link text-danger active" href="/adminlogout">
+                        <a class="nav-link text-danger active" href="/tailoradminlogout">
                             <i class="fas fa-sign-out-alt me-2"></i> Logout
                         </a>
                     </div>

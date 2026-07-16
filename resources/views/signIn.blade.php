@@ -53,7 +53,7 @@
           @endif 
           
           <h3 class=" my-3 mb-3 text-center">Login into account</h3>
-          <form class="mx-2 my-2" action="{{ URL::to('loginUser') }}" method="POST">
+          <form class="mx-2 my-2" action="{{ URL::to('tailorloginUser') }}" method="POST">
               @csrf
             <div class="mb-2">
               <label for="UseridEmail" class="form-label">Email</label>

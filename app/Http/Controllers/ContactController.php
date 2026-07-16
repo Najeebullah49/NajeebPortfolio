@@ -3,7 +3,9 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Contact;
+use App\Models\PortfolioContact;
 use App\Models\User;
+use App\Models\PortfolioUser;
 class ContactController extends Controller
 {
     public function submit(Request $request)
@@ -35,6 +37,7 @@ return redirect()->route('usercontacthistory')->with('success', 'Your Message su
     }
 
 
+
    //show the conatct data
     public function showContacts()
 {
@@ -53,4 +56,48 @@ $contacts = Contact::all();
  
     return view('admin.usercontacthistory', compact('contacts'));
 }
+
+
+   //show the conatct data in portfolio User
+    public function showPortfolioUserContacts()
+{
+// Fetch a user by ID
+$pcontacts = PortfolioContact::all(); 
+ 
+    return view('portfolio.portfoliocontacthistory', compact('pcontacts'));
+}
+
+
+
+//Submit the portfolio sata
+    public function psubmit(Request $request)
+    {
+        if(session()->get('id')){
+// Validate the form data
+$validated = $request->validate([
+    'name' => 'required|string|max:255',
+    'email' => 'required|email|max:255',
+    'address' => 'required|string|max:255',
+    'message' => 'required|string',
+]);
+
+// Store the data in the database
+PortfolioContact::create([
+    'user_id' => session('id'), // Get the logged-in user ID from the session
+    'name' => $request->name,
+    'email' => $request->email,
+    'address' => $request->address,
+    'message' => $request->message,
+]);
+
+// Redirect with a success message
+return redirect()->route('pcontact')->with('success', 'Your Message submitted successfully!');
+        }
+        else{
+            return redirect()->route('pusersignIn');
+           }
+    }
+
+
+    
 }

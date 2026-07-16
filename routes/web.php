@@ -1,15 +1,28 @@
 <?php
+use App\Http\Controllers\PortfolioController;
+use App\Http\Controllers\CLanguageController;
+use App\Http\Controllers\JavaController;
+use App\Http\Controllers\CplusPlusController;
+use App\Http\Controllers\HTMLController;
+use App\Http\Controllers\CSSController;
+use App\Http\Controllers\Bootsrap5Controller;
+use App\Http\Controllers\LaravelController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\MedicalUserController;
 use App\Http\Controllers\MeasurementController;
+use App\Http\Controllers\MedicalDashboardController;
 use App\Models\Measurement;
-use App\Models\User;
+use App\Models\User; 
+use App\Models\PortfolioUser;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\StockController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
+Route::get('/home', function () {
     return redirect()->route('home');
 });
 Route::get('/najeebm', function () {
@@ -20,9 +33,9 @@ Route::get('/home', function () {
     return view('Home');
 })->name('home');
 
-Route:: get('/about',function(){
+Route:: get('/tailorabout',function(){
     return view('about');
-})->name('about');
+})->name('tailorabout');
 
 Route:: get('/contactus',function(){
     return view('contactUs');
@@ -36,9 +49,9 @@ Route:: get('/welcome',function(){
     return view('welcome');
 });
 
-Route:: get('/signIn',function(){
+Route:: get('/usersignIn',function(){
     return view('signIn');
-})->name('login');
+})->name('userlogin');
 
 Route:: get('/headerFooter',function(){
     return view('headerFooter');
@@ -67,11 +80,12 @@ Route:: get('/header',function(){
 });
 
 Route:: post('/registerUser',[UserController::class,'registerUser']);
-Route:: post('/loginUser',[UserController::class,'loginUser']);
-Route:: get('/logout',[UserController::class,'logout']);
+Route:: post('/tailorloginUser',[UserController::class,'tailorloginUser'])->name('tailorloginUser');
+
+Route:: get('/logout',[UserController::class,'userlogout'])->name('logout');
 
 
-Route::get('/profile', [UserController::class, 'profile'])->name('profile');
+Route::get('/tailoruserprofile', [UserController::class, 'tailoruserprofile'])->name('tailoruserprofile');
 
 Route::get('/masterLayout', function(){
     return view('masterLayout');
@@ -116,6 +130,7 @@ Route::post('/update-user-name', [UserController::class, 'updateUserName'])->nam
 //change user  email
 Route::post('/update-user-email', [UserController::class, 'updateUserEmail'])->name('updateUserEmail');
 
+
 // GET route for displaying the user profile
 Route::get('/manageuserprofile', [UserController::class, 'manageProfile'])->name('usermanageprofile.show');
 
@@ -137,12 +152,10 @@ Route::get('/orders/{orderId}', [OrderController::class, 'destroy'])->name('orde
 Route::get('/invoice/view/all', [OrderController::class, 'showallInvoice'])->name('showall.orders');
 
 
-
-
 // Admin site routes
-// Route::get('/najeebmaster', function () {
-//     return view('admin.adminlayouts.adminLayout');
-// });
+Route::get('/tailornajeebmaster', function () {
+    return view('admin.adminlayouts.adminLayout');
+});
 
 Route::get('/najeebmaster', [AdminController::class, 'adminSmallProfile']);
 
@@ -213,14 +226,14 @@ Route::get('/s_a_manageprofile', [AdminController::class, 'settingupdateProfile'
 // Profile page
 Route::get('/admin_manageprofile', [AdminController::class, 'updateProfile'])->name('admin.manage.profile');
 // Admin register
-Route::get('admin_register', function(){
+Route::get('tailoradminregister', function(){
 
     return view('admin.admin_register');
 })->name('admin.register');
 Route::post('/registeradmin', [AdminController::class, 'AdminRegister'])->name('admin.register');
 //Chart
 Route::get('/charts', [OrderController::class, 'showCharts'])->name('charts');
-Route::get('/profits', [AdminController::class, 'showProfits'])->name('profits');
+Route::get('/tailorprofits', [AdminController::class, 'showProfits'])->name('tailor.profits');
 //view user pendding
 Route::get('/viewuserpendding/{orderId}', [OrderController::class, 'ViewUserPendding'])->name('view.user.pendding');
 //Register Admin
@@ -233,6 +246,184 @@ Route::get('/eachuser/{orderId}',[MeasurementController::class,'EachUserMeasurem
 //user Contact History
 Route::get('/adminusercontact',[ContactController::class,'showUserContacts']);
 //Admin logout
+Route:: get('/tailoradminlogout',[AdminController::class,'tailoradminLogout']);
+
+
+
+//Najeeb Portfolio
+Route:: get('/pusersignUp',function(){
+    return view('portfolio.psignup');
+})->name('pusersignUp');
+
+Route:: get('/pusersignIn',function(){
+    return view('portfolio.psignin');
+})->name('pusersignIn');
+
+
+Route::get('/', function () {
+    return view('portfolio.portfoliohome');
+})->name('/');
+
+//Contact 
+Route::get('/contact', function () {
+    return view('portfolio.contact');
+});
+//About
+Route::get('/about', function () {
+    return view('portfolio.about');
+});
+//About
+Route::get('/skills', function () {
+    return view('portfolio.skills');
+});
+//Projects
+Route::get('/projects', function () {
+    return view('portfolio.projects');
+});
+//FAQs
+Route::get('/faqs', function () {
+    return view('portfolio.faqs');
+});
+
+Route::get('/pcontact', function () {
+    return view('portfolio.portfoliocontacthistory');
+});
+
+Route:: post('/registerPortfolioUser',[PortfolioController::class,'registerPortfolioUser']);
+Route:: post('/portfolioUserLogin',[PortfolioController::class,'portfoliologinUser'])->name('portfolioUserLogin');
+// portfolioProfile
+Route::get('/portfolioProfile',[PortfolioController::class, 'portfolioProfile']);
+Route::get('/showPortfolioUserContacts',[ContactController::class,'showPortfolioUserContacts'])->name('pcontact');
+
+Route::post('/pcontact.store', [ContactController::class, 'psubmit'])->name('pcontact.store');
+Route::get('/puserprofile', [PortfolioController::class, 'pmyprofile']);
+//update portfolio user profile
+Route::post('/pupdate-profile-picture', [PortfolioController::class, 'pupdateProfilePicture'])->name('pupdate.profile.picture');
+//Change user name
+Route::post('/pupdate-user-name', [PortfolioController::class, 'pupdateUserName'])->name('pupdateUserName');
+//change portfolio  user  email
+Route::post('/pupdate-user-email', [PortfolioController::class, 'pupdateUserEmail'])->name('pupdateUserEmail');
+//Change portfolio  user password
+Route::post('/puser/update-password', [PortfolioController::class, 'pupdatePassword'])->name('puser.updatePassword');
+// GET route for displaying the portfolio user profile
+Route::get('/pmanageuserprofile', [PortfolioController::class, 'pmanageProfile'])->name('pusermanageprofile.show');
+
+// POST route for updating the user profile
+Route::post('/pmanageuserprofile', [PortfolioController::class, 'pupdateProfile'])->name('pusermanageprofile.update');
+
+
+
+
+
+
+
+//Medical Store
+Route:: get('/medicalsignin',function(){
+    return view('medicalstore.signIn');
+})->name('medicallogin');
+Route::get('/medicalhome', function () {
+    return view('medicalstore.medicaldashboard');
+})->name('medicalhome');
+Route:: get('/medicalsignUp',function(){
+    return view('medicalstore.signUp');
+})->name('medicalsignUp');
+Route:: get('/headerFooter',function(){
+    return view('headerFooter');
+});
+Route:: get('/footer',function(){
+    return view('pages.footer');
+});
+Route:: get('/header',function(){
+    return view('pages.header');
+});
+Route:: post('/registerMedicalUser',[MedicalUserController::class,'registerMedicalUser'])->name('register.Medical.User');
+Route:: post('/loginMedicalUser',[MedicalUserController::class,'loginMedicalUser'])->name('login.Medical.User');;
+//admin site
+Route::get('/medicalDashboard', [ medicalDashboardController::class, 'showMedicalDashboard'])->name('display.medical.Dashboard');
+Route::get('/customers', [AdminController::class, 'customersDetails']);
+//Admin Profile 
+Route::get('/medicaladminprofile',[AdminController::class, 'MedicaladminProfile']);
+Route::post('/madmin/update-name', [AdminController::class, 'mupdateName'])->name('madmin.updateName');
+// Update email
+Route::post('/madmin/update-email', [AdminController::class, 'mupdateEmail'])->name('madmin.updateEmail');
+//Change admin picture
+Route::post('/madmin/update-photo', [AdminController::class, 'mupdatePicture'])->name('madmin.updatePicture');
+//Admin password change
+Route::post('/madmin/change-password', [AdminController::class, 'mchangePassword'])->name('madmin.changePassword');
+// Setting admin manage profile
+Route::get('/s_a_manageprofile', [AdminController::class, 'settingupdateProfile'])->name('s_a_manageprofile');
+
+// Profile page
+Route::get('/admin_manageprofile', [AdminController::class, 'updateProfile'])->name('admin.manage.profile');
+// Admin register
+Route::get('admin_register', function(){
+
+    return view('medicalstore.admin_register');
+})->name('admin.register');
+Route::post('/registeradmin', [AdminController::class, 'AdminRegister'])->name('admin.register');
+//Chart
+Route::get('/charts', [OrderController::class, 'showCharts'])->name('charts');
+Route::get('/profits', [AdminController::class, 'showMedicalProfits'])->name('medical.profits');
+//view user pendding
+
+Route:: post('/registerAdmin',[UserController::class,'registerAdmin'])->name('register.Admin');
+Route:: get('/signUpAdmin',function(){
+    return view('admin/admin_register');
+})->name('signUpAdmin');
+Route::get('/medicalcustomers', [AdminController::class, 'customerMedicalsDetails']);
+//Admin logout
 Route:: get('/adminlogout',[UserController::class,'adminLogout']);
+Route::get('/uploadstock', [StockController::class, 'index'])->name('stock.index');
+Route::post('/stock', [StockController::class, 'store'])->name('stock.store');
+Route::get('/sold', [StockController::class, 'sold'])->name('sold.stock');
+Route::get('/invoice', [InvoiceController::class, 'index'])->name('invoice.index');
+Route::post('/invoice/sell', [InvoiceController::class, 'sell'])->name('invoice.sell');
+Route::get('/invoice/print/{id}', [InvoiceController::class, 'print'])->name('invoice.print');
+Route:: get('/template', function(){
+    return view('admin/template');          
+});
+Route::post('/invoice.store', [InvoiceController::class, 'store'])->name('invoice.store');
+Route::get('/invoice_list', [InvoiceController::class, 'invoice_list'])->name('admin.invoice_list');
+Route::get('/current_stock', [InvoiceController::class, 'current_stock'])->name('current.stock');
+
+// Invoices Filter Routes
+Route::get('/invoices/daily', [InvoiceController::class, 'dailyInvoices'])->name('invoices.daily');
+Route::get('/invoices/weekly', [InvoiceController::class, 'weeklyInvoices'])->name('invoices.weekly');
+Route::get('/invoices/monthly', [InvoiceController::class, 'monthlyInvoices'])->name('invoices.monthly');
+Route::get('/invoices/yearly', [InvoiceController::class, 'yearlyInvoices'])->name('invoices.yearly');
+Route::get('/print/{id}', [InvoiceController::class, 'print'])->name('admin.print');
 
 
+    Route::get('/invoices/{id}', [App\Http\Controllers\InvoiceController::class, 'show'])->name('admin.invoices.show');
+    Route::get('/invoices/{id}/edit', [App\Http\Controllers\InvoiceController::class, 'edit'])->name('admin.invoices.edit');
+    Route::put('/invoices/{id}', [App\Http\Controllers\InvoiceController::class, 'update'])->name('invoice.update');
+    Route::delete('/invoices/{id}', [App\Http\Controllers\InvoiceController::class, 'destroy'])->name('admin.invoices.destroy');
+
+Route::get('/stock/{id}', [StockController::class, 'showStock'])->name('stock.show');
+Route::get('/stock/{id}/edit', [StockController::class, 'editStock'])->name('stock.edit');
+Route::delete('/stock/{id}', [StockController::class, 'destroyStock'])->name('stock.destroy');
+
+
+Route::put('/stock/{id}', [StockController::class, 'updateStock'])->name('stock.update');
+Route::get('/najeebmaster', [AdminController::class, 'MedicaladminSmallProfile']);
+
+Route:: get('/adminlogout',[MedicalUserController::class,'MedicaladminLogout']);
+
+
+// C Language
+
+
+Route::get('/c-course', [CLanguageController::class, 'CLanguageCourse'])->name('c-course');
+// C Plus Plus
+Route::get('/c-plus-plus-course', [CplusPlusController::class, 'CplusPlusCourse'])->name('c-plus-plus-course');
+
+// Java
+Route::get('/java-course', [JavaController::class, 'JavaCourse'])->name('java-course');
+// HTML
+Route::get('/html-course', [HTMLController::class, 'HTMLCourse'])->name('html-course');
+// CSS
+Route::get('/css-course', [CSSController::class, 'CSSCourse'])->name('css-course');
+// Bootsrap5
+Route::get('/bootsrap5-course', [Bootsrap5Controller::class, 'Bootsrap5Course'])->name('bootsrap5-course');
+// Laravel
+Route::get('/laravel-course', [LaravelController::class, 'LaravelCourse'])->name('laravel-course');

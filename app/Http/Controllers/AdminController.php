@@ -1,15 +1,17 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Models\User;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Models\UploadProduct;
 use App\Models\Contact;
-use App\Models\User;
+use App\Models\MedicalUser;
 use App\Models\Order;
+use App\Models\Invoice;
 use App\Models\OrderItem;
 use App\Models\Measurement;
 use App\Models\OptionalProduct;
@@ -141,6 +143,16 @@ public function showContacts()
         // Pass both the count and the measurements to the view
         return view('admin.customers', compact('customerDetails'));
     }
+     // Medical customer Details
+    public function customerMedicalsDetails()
+    {
+        // Count all rows in the 'measurements' table
+        $customerDetails = MedicalUser::all();
+
+
+        // Pass both the count and the measurements to the view
+        return view('medicalstore.customers', compact('customerDetails'));
+    }
     
 
     public function AdminproductDetails()
@@ -173,8 +185,14 @@ public function showContacts()
 
     //Admin small profile
     public function adminSmallProfile(){
-          $admindata  = User::where('id', session('id'))->first();
-        return view('admin.adminlayouts.adminLayout',compact('admindata'));
+          $tailoradmindata  = User::where('id', session('id'))->first();
+        return view('admin.adminlayouts.adminLayout',compact('tailoradmindata'));
+    }
+
+     //Medical Admin small profile
+    public function MedicaladminSmallProfile(){
+          $admindata  = MedicalUser::where('id', session('id'))->first();
+        return view('medicalstore.adminlayouts.adminLayout',compact('admindata'));
     }
    
     
@@ -236,6 +254,13 @@ public function showContacts()
         $adminProfile = User::where('type', 'Admin')->first();
     
         return view('admin.adminprofile', compact('adminProfile'));
+    }
+    //Medical Admin Controller
+    public function MedicaladminProfile()
+    {
+        $adminProfile = MedicalUser::where('type', 'Admin')->first();
+    
+        return view('medicalstore.adminprofile', compact('adminProfile'));
     }
     
     // Update admin name
@@ -332,38 +357,40 @@ public function updatePicture(Request $request)
 //Admin password change
 
 
+
 public function changePassword(Request $request)
 {
-    // Validate the input
+    // Validate the form
     $request->validate([
         'current_password' => 'required',
-        'new_password' => 'required|min:8|confirmed', // "confirmed" ensures new_password matches confirm_password
+        'new_password' => 'required|min:8|confirmed',
     ]);
 
-    // Get the admin user (assumes single admin)
+    // Get the admin
     $admin = User::where('type', 'Admin')->first();
 
-    if ($admin) {
-        // Check if the current password matches
-        if (!Hash::check($request->current_password, $admin->password)) {
-            return redirect()->back()->with('error', 'Current password is incorrect.');
-        }
-
-        // Update the password
-        $admin->password = Hash::make($request->new_password);
-        $admin->save();
-
-        return redirect()->back()->with('success', 'Password updated successfully!');
+    if (!$admin) {
+        return redirect()->back()->with('error', 'Admin not found.');
     }
 
-    return redirect()->back()->with('error', 'Admin not found.');
+    // Verify current password
+    if (!Hash::check($request->current_password, $admin->password)) {
+        return redirect()->back()->with('error', 'Current password is incorrect.');
+    }
+
+    // Update password
+    $admin->password = Hash::make($request->new_password);
+
+    if ($admin->save()) {
+        return redirect()->back()->with('success', 'Password updated successfully.');
+    }
+
+    return redirect()->back()->with('error', 'Failed to update password.');
 }
 
 
 
-
-
-
+//Update Profile
 public function updateProfile(Request $request)
 {
     // Validate the input data
@@ -583,5 +610,181 @@ public function showProfits(){
   return view('admin.profits', compact('dailyRevenue', 'weeklyRevenue', 'monthlyRevenue',  'days', 'totalRevenue', 'totalOrders','totalR'));
 
   }
+
+
+  //Show medical profits
+  public function showMedicalProfits(){
+   
+     $totalR = Invoice::sum('totalAfterDiscount');
+    $dailyRevenue = Invoice::whereDate('created_at', now())->sum('totalAfterDiscount');
+    $weeklyRevenue = Invoice::whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->sum('totalAfterDiscount');
+    $monthlyRevenue = Invoice::whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])->sum('totalAfterDiscount');
+
+    // Chart section
+    $startOfMonth = now()->startOfMonth();
+    $endOfMonth = now()->endOfMonth();
+
+    $days = [];
+    $totalRevenue = [];
+    $totalOrders = [];
+
+    for ($date = $startOfMonth->copy(); $date <= $endOfMonth; $date->addDay()) {
+        $days[] = $date->format('d');
+
+        // ✅ Correct: fetch that day's revenue & orders
+        $dayRevenue = \App\Models\Invoice::whereDate('created_at', $date)->sum('totalAfterDiscount');
+        $dayOrders = \App\Models\InvoiceItem::whereDate('created_at', $date)->sum('quantity');
+
+        $totalRevenue[] = $dayRevenue;
+        $totalOrders[] = $dayOrders;
+    }
+
+    return view('medicalstore.profits', compact(
+        'dailyRevenue',
+        'weeklyRevenue',
+        'monthlyRevenue',
+        'days',
+        'totalRevenue',
+        'totalOrders',
+        'totalR'
+    ));
+}
+
+
+
+     public function tailoradminLogout(Request $request)
+    {
+        $request->session()->forget('admin_id');
+        // Redirect to the login page
+        return redirect()->route('userlogin');
+    }
+    
+
+
+
+
+
+    //This Medical Admin Updation section
+        // Update admin name
+    public function mupdateName(Request $request)
+{
+    // Validate the input
+    $request->validate([
+        'name' => 'required|string|max:255',
+    ]);
+
+    // Retrieve the admin user (assumes single admin)
+    $admin = MedicalUser::where('type', 'Admin')->first();
+
+    // Update the name
+    if ($admin) {
+        $admin->name = $request->name;
+        $admin->save();
+
+        // Redirect with a success message
+        return redirect()->back()->with('success', 'Admin name updated successfully!');
+    }
+
+    // Redirect with an error message if admin not found
+    return redirect()->back()->with('error', 'Admin not found.');
+}
+
+
+//Update email
+public function mupdateEmail(Request $request)
+{
+    // Validate the input
+    $request->validate([
+        'email' => 'required|email|unique:users,email',
+    ]);
+
+    // Retrieve the admin user (assumes single admin)
+    $admin = MedicalUser::where('type', 'Admin')->first();
+
+    // Update the email
+    if ($admin) {
+        $admin->email = $request->email;
+        $admin->save();
+
+        // Redirect with a success message
+        return redirect()->back()->with('success', 'Admin email updated successfully!');
+    }
+
+    // Redirect with an error message if admin not found
+    return redirect()->back()->with('error', 'Admin not found.');
+}
+
+// Change admin picture
+public function mupdatePicture(Request $request)
+{
+    // Validate the uploaded file
+    $request->validate([
+        'picture' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Max 2MB
+    ]);
+
+    // Find the admin
+    $admin = MedicalUser::where('type', 'Admin')->first();
+
+    if ($admin) {
+        // Upload the new picture
+        if ($request->hasFile('picture')) {
+            $file = $request->file('picture');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = public_path('uploads/profiles');
+            
+            // Ensure the directory exists
+            if (!file_exists($path)) {
+                mkdir($path, 0755, true);
+            }
+
+            // Move the file to the directory
+            $file->move($path, $filename);
+
+            // Delete the old photo if it exists
+            if ($admin->picture && file_exists(public_path('uploads/profiles/' . $admin->picture))) {
+                unlink(public_path('uploads/profiles/' . $admin->picture));
+            }
+
+            // Save the new filename in the database
+            $admin->picture = $filename;
+            $admin->save();
+
+            return redirect()->back()->with('success', 'Profile photo updated successfully!');
+        }
+    }
+
+    return redirect()->back()->with('error', 'Admin not found.');
+}
+
+//Admin password change
+
+
+public function mchangePassword(Request $request)
+{
+    // Validate the input
+    $request->validate([
+        'current_password' => 'required',
+        'new_password' => 'required|min:8|confirmed', // "confirmed" ensures new_password matches confirm_password
+    ]);
+
+    // Get the admin user (assumes single admin)
+    $madmin = MedicalUser::where('type', 'Admin')->first();
+
+    if ($madmin) {
+        // Check if the current password matches
+        if (!Hash::check($request->current_password, $admin->password)) {
+            return redirect()->back()->with('error', 'Current password is incorrect.');
+        }
+
+        // Update the password
+        $madmin->password = Hash::make($request->new_password);
+        $madmin->save();
+
+        return redirect()->back()->with('success', 'Password updated successfully!');
+    }
+
+    return redirect()->back()->with('error', 'Admin not found.');
+}
+
 
 }

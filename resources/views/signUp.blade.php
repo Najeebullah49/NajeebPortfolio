@@ -119,7 +119,7 @@
           <!-- <a class="text-center form-text my-2 text-primary mx-2 " href="#">
             Sign up with Google</a>
          </div> -->
-          <h6 class="text-center d-flex mt-3 mb-3 mx-5 ">Already have an account? <a class=" mx-auto" href="{{route('login')}}">Login</a></h6>
+          <h6 class="text-center d-flex mt-3 mb-3 mx-5 ">Already have an account? <a class=" mx-auto" href="{{route('userlogin')}}">Login</a></h6>
         </div>
       </div>
       
@@ -132,7 +132,7 @@
    <script src="{{asset('css/js/bootstrap.bundle.min.js') }}"></script>
 
 <!-- Bootstrap Bundle JS (includes Popper.js) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script> -->
 
 </body>
 </html>

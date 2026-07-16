@@ -103,7 +103,10 @@
         <div class="col-auto">
            
             <div>
-                <img class="profile-image" src="{{ asset('uploads/profiles/' . $adminProfile->picture) }}" alt="Profile Image" style="width: 100px; height: 100px; border-radius: 50%;">
+               
+                <img class="profile-image" src=" {{ !empty($adminProfile->picture) && file_exists(public_path('uploads/profiles/'.$adminProfile->picture)) 
+                        ? asset('uploads/profiles/'.$adminProfile->picture) 
+                        : asset('images/profile/defaultprofile.png') }}" alt="Profile Image" style="width: 100px; height: 100px; border-radius: 50%;">
             </div>
         </div>
         <div class="col text-end">
@@ -200,15 +203,18 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="currentPassword" class="form-label">Current Password</label>
-                        <input type="password" name="current_password" class="form-control" id="currentPassword" required>
+                        <!-- <input type="password" name="current_password" class="form-control" id="currentPassword" required> -->
+                   <input type="password" name="current_password" class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label for="newPassword" class="form-label">New Password</label>
-                        <input type="password" name="new_password" class="form-control" id="newPassword" required>
+                        <!-- <input type="password" name="new_password" class="form-control" id="newPassword" required> -->
+                         <input type="password" name="new_password" class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label for="confirmPassword" class="form-label">Confirm New Password</label>
-                        <input type="password" name="confirm_password" class="form-control" id="confirmPassword" required>
+                        <!-- <input type="password" name="new_password_confirmation" class="form-control" id="confirmPassword" required> -->
+                 <input type="password" name="new_password_confirmation" class="form-control" required>
                     </div>
                 </div>
                 <div class="modal-footer">
