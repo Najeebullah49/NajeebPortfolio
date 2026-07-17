@@ -236,8 +236,7 @@
             <img
               src="https://images.unsplash.com/photo-1556740749-887f6717d7e4"
               alt="Ecommerce Project"
-              class="project-image"
-            />
+              class="project-image"/>
 
             <div class="project-content">
 
@@ -277,11 +276,9 @@
         <div class="col-lg-4 col-md-6">
           <div class="project-card">
 
-            <img
-              src="images/tailor.PNG"
-              alt="Tailor Management"
-              class="project-image"
-            />
+         <img src="{{ asset('images/tailor.PNG') }}"
+     alt="Tailor Management"
+     class="project-image">
 
             <div class="project-content">
 
