@@ -275,7 +275,7 @@
         <!-- Project 2 -->
         <div class="col-lg-4 col-md-6">
           <div class="project-card">
-
+ <img src="images/najeeb.jpg" alt="Profile" class="profile-img mb-3">
          <img src="{{ asset('images/tailor.PNG') }}"
      alt="Tailor Management"
      class="project-image">
