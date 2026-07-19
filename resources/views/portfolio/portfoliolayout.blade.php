@@ -218,7 +218,7 @@
       <li class="nav-item"><a class="nav-link" href="/projects">Projects</a></li>
 
   <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="" data-bs-toggle="dropdown">Courses</a>
+        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Courses</a>
         <ul class="dropdown-menu">
           <li><a class="dropdown-item" href="c-course">C Language</a></li>
           <li><a class="dropdown-item" href="c-plus-plus-course">C++</a></li>
